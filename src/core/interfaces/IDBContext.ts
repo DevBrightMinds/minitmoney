@@ -1,3 +1,6 @@
+import { PrismaClient } from "@prisma/client";
+
 export interface IDBContext {
-    buildDBQueryURL(): Promise<string>;
+    disconnect(): Promise<void>
+    createDBConnection(): Promise<PrismaClient>;
 }
