@@ -10,4 +10,5 @@ export const ENVVariables = {
     BcryptNum: DotEnv.BCRYPT_SALT_NUM,
     CryptrCode: DotEnv.CRYPT_CODE,
     JWTSecret: DotEnv.JWT_SECRET,
+    JWTRefreshSecret: DotEnv.REFRESHTOKENSECRET,
 }
