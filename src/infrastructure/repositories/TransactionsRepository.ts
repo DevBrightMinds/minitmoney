@@ -5,6 +5,7 @@ import { AppResponse } from "../../core/entities/AppResponse";
 import { Validator } from "../../application/validation/Validator";
 import { AppResponses } from "../../application/responses/AppResponses";
 import { ITransactionsRepository } from "../../core/interfaces/ITransactionsRepository";
+import { Pagination } from "../../core/entities/Pagination";
 
 export class TransactionsRepository extends BaseRepository implements ITransactionsRepository {
     public Validations: Validator | undefined;
@@ -14,19 +15,26 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
         this.Validations = new Validator();
     }
 
-    async getAllAsync(filter: Filters): Promise<AppResponse> {
+    async getAllAsync(pagination: Pagination): Promise<AppResponse> {
         const prisma = await this.createDBConnection();
 
         // what we want is to make sure that we don't include a property once its value is empty or null
         // so we will exclude them as such
         const where = {
-            userId: filter.userId,
-            ...(filter.currency && { currency: { contains: filter.currency } }),
-            ...(filter.amount && { amount: filter.amount }),
+            userId: pagination.Filter.userId,
+            ...(pagination.Filter.currency && { currency: { contains: pagination.Filter.currency } }),
+            ...(pagination.Filter.amount && { amount: pagination.Filter.amount }),
         };
 
+        const page = pagination.Page || 1;
+        const limit = pagination.Limit || 10;
+
+        const skip = (page - 1) * limit;
+
         const transactions = await prisma.transaction.findMany({
-            where: where,
+            where: where as any,
+            skip: Number(skip),
+            take: Number(limit),
             orderBy: {
                 createdAt: "desc",
             },
@@ -36,7 +44,7 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
         // so in adding the date filter - we will do this
         const withDateFilter = transactions.filter((item: Transaction) => {
             const createdAtDate = new Date(item?.createdAt);
-            const filterDate = new Date(filter.date);
+            const filterDate = new Date(pagination.Filter.date);
 
             // strip the time parts (hours, minutes, seconds, milliseconds)
             createdAtDate.setHours(0, 0, 0, 0);
@@ -48,8 +56,19 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
 
         await this.disconnect();
 
-        return new AppResponses().successResponse(withDateFilter);
+        const totalPages = Math.ceil(withDateFilter?.length / limit);
+
+        return new AppResponses().successResponse({
+            pagination: {
+                currentPage: page,
+                pageSize: withDateFilter?.length,
+                totalItems: withDateFilter?.length,
+                totalPages: totalPages,
+            },
+            Data: withDateFilter
+        });
     }
+
 
     async getAsync(id: number): Promise<AppResponse> {
         const prisma = await this.createDBConnection();
