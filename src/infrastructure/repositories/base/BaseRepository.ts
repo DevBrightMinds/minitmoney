@@ -1,14 +1,14 @@
-import { PrismaClient } from "@prisma/client";
 import { DBContext } from "../../data/DBContext";
+import { PrismaClient } from "../../../generated/prisma";
 
 export class BaseRepository extends DBContext  {
-    protected prisma: PrismaClient;
+    protected prisma: PrismaClient | undefined;
 
     constructor() {
         super();
     }
 
-    async getDBConnection(): Promise<PrismaClient> {
-        this.prisma = this.createDBConnection();
+    async getDBConnection(): Promise<void> {
+        this.prisma = await this.createDBConnection();
     }
 }
