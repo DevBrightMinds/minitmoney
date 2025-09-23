@@ -8,10 +8,7 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "types": [
-      "jest",
-      "node"
-    ],
+    "types": [],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -20,6 +17,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
