@@ -3,6 +3,7 @@ import express, { Application } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import supertest from "supertest";
 import { ENVVariables } from "./core/utils/EnvVariables";
 import UserController from "./api/controllers/UserController";
 import TransactionsController from "./api/controllers/TransactionsController";

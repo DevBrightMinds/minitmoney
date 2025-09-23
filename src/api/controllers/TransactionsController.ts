@@ -12,16 +12,17 @@ TransactionsController.post("/create", async (request: Request, response: Respon
     if (isAuthorized !== "")
         response.send(await transactionsRepo.createAysnc(request.body));
     else
-        return response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
+        response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
 });
 
+// this could also work as get - .get("/get/:id")
 TransactionsController.post("/get", async (request: Request, response: Response) => {
     const isAuthorized = await isSessionValid(request);
 
     if (isAuthorized !== "")
         response.send(await transactionsRepo.getAsync(request.body?.id));
     else
-        return response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
+        response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
 });
 
 TransactionsController.post("/getAll", async (request: Request, response: Response) => {
@@ -30,7 +31,7 @@ TransactionsController.post("/getAll", async (request: Request, response: Respon
     if (isAuthorized !== "")
         response.send(await transactionsRepo.getAllAsync(request.body));
     else
-        return response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
+        response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
 });
 
 const isSessionValid = async (request: Request): Promise<string> => {
