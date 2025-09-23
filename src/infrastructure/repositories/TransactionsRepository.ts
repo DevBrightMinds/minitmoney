@@ -18,22 +18,36 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
     async getAllAsync(filter: Filters): Promise<AppResponse> {
         const prisma = await this.createDBConnection();
 
+        // what we want is to make sure that we don't include a property once its value is empty or null
+        // so we will exclude them as such
+        const where = {
+            userId: filter.userId,
+            ...(filter.currency && { currency: { contains: filter.currency } }),
+            ...(filter.amount && { amount: filter.amount }),
+        };
+
         const transactions = await prisma.transaction.findMany({
-            where: {
-                userId: filter.userId,
-                currency: filter.currency ? { contains: filter.currency } : "",
-                amount: {
-                    gte: filter.amount,
-                    lte: filter.amount,
-                },
-                createdAt: filter.date ? new Date(filter.date) : ""
-            },
+            where: where,
             orderBy: {
                 createdAt: "desc",
             },
         });
 
-        return new AppResponses().successResponse(transactions);
+        // id assume we will not necessarily care about the actual time in the date string but only date itself
+        // so in adding the date filter - we will do this
+        const withDateFilter = transactions.filter((item: Transaction) => {
+            const createdAtDate = new Date(item?.createdAt);
+            const filterDate = new Date(filter.date);
+
+            // strip the time parts (hours, minutes, seconds, milliseconds)
+            createdAtDate.setHours(0, 0, 0, 0);
+            filterDate.setHours(0, 0, 0, 0);
+
+            // Compare only the date part (ignoring time)
+            return createdAtDate.getTime() === filterDate.getTime();
+        });
+
+        return new AppResponses().successResponse(withDateFilter);
     }
 
     async getAsync(id: number): Promise<AppResponse> {

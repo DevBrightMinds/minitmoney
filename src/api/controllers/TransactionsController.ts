@@ -15,7 +15,7 @@ TransactionsController.post("/create", async (request: Request, response: Respon
         response.send({ status: false, message: "Unauthorized.", responseCode: 401, data: {} } as AppResponse);
 });
 
-// this could also work as get - .get("/get:/id")
+// this could also work as get - .get("/get/:id")
 TransactionsController.post("/get", async (request: Request, response: Response) => {
     const isAuthorized = await isSessionValid(request);
 
