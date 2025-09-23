@@ -1,7 +1,6 @@
 import { Transaction } from "../../generated/prisma";
 import { Filters } from "../../core/entities/Filters";
 import { BaseRepository } from "./base/BaseRepository";
-import { Pagination } from "../../core/entities/Pagination";
 import { AppResponse } from "../../core/entities/AppResponse";
 import { Validator } from "../../application/validation/Validator";
 import { AppResponses } from "../../application/responses/AppResponses";
@@ -47,6 +46,8 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
             return createdAtDate.getTime() === filterDate.getTime();
         });
 
+        await this.disconnect();
+
         return new AppResponses().successResponse(withDateFilter);
     }
 
@@ -56,6 +57,8 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
         const response = await prisma.transaction.findFirst({
             where: { id: id },
         });
+
+        await this.disconnect();
 
         return new AppResponses().successResponse(response as Transaction);
     }
@@ -97,6 +100,8 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
 
         const response = await prisma.transaction.create({ data: item });
 
+        await this.disconnect();
+
         return new AppResponses().successResponse(response);
     }
 
@@ -108,6 +113,8 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
             data: item,
         });
 
+        await this.disconnect();
+
         return new AppResponses().successResponse(response);
     }
 
@@ -117,6 +124,8 @@ export class TransactionsRepository extends BaseRepository implements ITransacti
         const response = await prisma.transaction.delete({
             where: { id: item?.id },
         });
+
+        await this.disconnect();
 
         return new AppResponses().successResponse(response);
     }

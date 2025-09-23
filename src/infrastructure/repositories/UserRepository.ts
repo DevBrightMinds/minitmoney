@@ -24,6 +24,8 @@ export class UserRepository extends BaseRepository implements IUserRepository {
             data: sess
         });
 
+        await this.disconnect();
+
         return new AppResponses().successResponse(response);
     }
 
@@ -52,6 +54,8 @@ export class UserRepository extends BaseRepository implements IUserRepository {
             data: { token: newRefreshToken },
         });
 
+        await this.disconnect();
+
         return new AppResponses().successResponse({ token: newAccessToken, refreshToken: newRefreshToken });
 
     }
@@ -78,6 +82,8 @@ export class UserRepository extends BaseRepository implements IUserRepository {
         const refreshToken: string = jwtServices.GenerateRefreshToken(ifUserExists);
 
         await this.createSession({ userId: ifUserExists.id, token: token } as Session);
+
+        await this.disconnect();
 
         return new AppResponses().successResponse({ token, refreshToken });
 
@@ -108,6 +114,8 @@ export class UserRepository extends BaseRepository implements IUserRepository {
             data: user
         });
 
+        await this.disconnect();
+
         return new AppResponses().successResponse(response);
     }
 
@@ -115,24 +123,38 @@ export class UserRepository extends BaseRepository implements IUserRepository {
         // we could also add some validations here
         const prisma = await this.createDBConnection();
 
-        return new AppResponses().successResponse(await prisma.user.update({
+        const response = await prisma.user.update({
             where: { id: user?.id },
             data: user,
-        }));
+        });
+
+        await this.disconnect();
+
+        return new AppResponses().successResponse(response);
     }
 
     async deleteAysnc(user: User): Promise<AppResponse> {
         // we could also add some validations here
         const prisma = new PrismaClient();
 
-        return new AppResponses().successResponse(await prisma.user.delete({
+        const response = await prisma.user.delete({
             where: { id: user?.id },
-        }));
+        });
+
+        await this.disconnect();
+
+        return new AppResponses().successResponse(response);
+
     }
 
     async getAllAsync(): Promise<AppResponse> {
         const prisma = new PrismaClient();
-        return new AppResponses().successResponse(await prisma.user.findMany());
+
+        const response = await prisma.user.findMany();
+
+        await this.disconnect();
+
+        return new AppResponses().successResponse(response);
     }
 
     async getAsync(id: number): Promise<AppResponse> {
@@ -141,6 +163,8 @@ export class UserRepository extends BaseRepository implements IUserRepository {
         const response = await prisma.user.findFirst({
             where: { id: id },
         });
+
+        await this.disconnect();
 
         return new AppResponses().successResponse(response as User);
     }
