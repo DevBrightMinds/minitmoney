@@ -116,6 +116,30 @@ model Transaction {
 }
 ```
 
+### Should you wish to Seed the DB
+
+```bash 
+-- SQL Seed Data for MinitMoney
+
+-- Inserting a sample user
+INSERT INTO `User` (`email`, `password`, `createdAt`)
+VALUES 
+  ('user@example.com', '$2a$12$Xn8uXk9QJbczJsp8DgB9JeRJjFfAkPJBxkc7SKyxHcXsCkZyQxhQm', NOW());
+
+-- Inserting a sample transaction
+INSERT INTO `Transaction` (`userId`, `recipient`, `amount`, `currency`, `exchangeRate`, `fee`, `netAmount`, `createdAt`)
+VALUES 
+  (1, 'recipient@example.com', 100.0, 'USD', 1.2, 2.0, 98.0, NOW());
+
+-- You can add more seed data as needed...
+```
+
+Then run this command to execute the seeing 
+
+```bash
+mysql -u <your_username> -p <your_database_name> < prisma/seed.sql
+```
+
 ### To run the app
 
 for dev
