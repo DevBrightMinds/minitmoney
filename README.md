@@ -135,3 +135,7 @@ to run the prod env
 ```bash
 npm run start
 ```
+
+### API Docs in Swagger 
+
+On your web browser, enter http://localhost:5500/api-docs/ 
