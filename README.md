@@ -82,7 +82,7 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
--**Your examplary / Suggested Models used to build the App**
+- **Your examplary / Suggested Models used to build the App**
 
 ``` bash
 model User {
