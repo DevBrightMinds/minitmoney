@@ -29,28 +29,32 @@ export class UserRepository extends BaseRepository implements IUserRepository {
         return new AppResponses().successResponse(response);
     }
 
-    async refreshAuthToken(session: Session, refreshToken: any): Promise<AppResponse> {
+    async refreshAuthToken(session: Session, token: string): Promise<AppResponse> {
         const jwtServices = JWTHelper();
         const prisma = new PrismaClient();
-        const isTokenValid = jwtServices.VerifyToken(refreshToken, ENVVariables.JWTRefreshSecret);
+        const isTokenValid = jwtServices.VerifyToken(token, ENVVariables.JWTSecret);
 
         if (isTokenValid == "Token invalid")
             return new AppResponses().errorResponse("Invalid refresh token");
 
         // if we want - we can also validate against the DB token
 
-        const user = await prisma.session.findUnique({ where: { id: session.userId } });
+        const sessions = await prisma.session.findMany({ where: { userId: session.userId } });
 
-        if (!user || user.token !== refreshToken)
+        const isSession = sessions.find((item: Session) => {
+            return (item?.token == token);
+        });
+
+        if (!isSession)
             return new AppResponses().errorResponse("Invalid refresh token");
 
-        const newAccessToken = jwtServices.GenerateToken({ id: user?.userId } as User);
-        const newRefreshToken = jwtServices.GenerateRefreshToken({ id: user?.userId } as User);
+        const newAccessToken = jwtServices.GenerateToken({ id: isSession?.userId } as User);
+        const newRefreshToken = jwtServices.GenerateRefreshToken({ id: isSession?.userId } as User);
 
         // we will once again update our session with the refresh token
 
         await prisma.session.update({
-            where: { id: user.id },
+            where: { id: isSession.id },
             data: { token: newRefreshToken },
         });
 

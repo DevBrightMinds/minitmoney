@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: minitmoney-svc
+    build:
+      context: .
+      dockerfile: Dockerfile  
+    ports:
+      - "5500:5500"
+    environment:
+      MYSQL_HOST: mysql # please set the correct value here - you can also keep these in git security as secrets
+      MYSQL_USER: root # please set the correct value here - you can also keep these in git security as secrets
+      MYSQL_PASSWORD: rootpassword # please set the correct value here - you can also keep these in git security as secrets
+      MYSQL_DATABASE: minitmoney # please set the correct value here - you can also keep these in git security as secrets
+    depends_on:
+      - mysql
+    networks:
+      - minitmoney-svc-network
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: minitmoney-mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # please set the correct value here - you can also keep these in git security as secrets
+      MYSQL_DATABASE: minitmoney # please set the correct value here - you can also keep these in git security as secrets
+    ports:
+      - "3306:3306"
+    networks:
+      - minitmoney-svc-network
+    restart: always
+
+networks:
+  app-network:
+    driver: bridge
