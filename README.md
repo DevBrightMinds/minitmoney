@@ -82,6 +82,37 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
+-**Your examplary models used to build the App**
+model User {
+    id Int @id @default(autoincrement())
+    email String @unique
+    password String
+    sessions Session[]
+    createdAt DateTime @default(now())
+    transactions Transaction[]
+}
+
+model Session {
+    id Int @id @default(autoincrement())
+    user User @relation(fields: [userId], references: [id])
+    userId Int
+    token String
+    createdAt DateTime @default(now())
+}
+
+model Transaction {
+    id Int @id @default(autoincrement())
+    user User @relation(fields: [userId], references: [id])
+    userId Int
+    recipient String
+    amount Float
+    currency String
+    exchangeRate Float
+    fee Float
+    netAmount Float
+    createdAt DateTime @default(now())
+}
+
 ### To run the app
 
 for dev
