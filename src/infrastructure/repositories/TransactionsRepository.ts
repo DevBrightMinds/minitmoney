@@ -1,11 +1,10 @@
 import { Transaction } from "../../generated/prisma";
-import { Filters } from "../../core/entities/Filters";
 import { BaseRepository } from "./base/BaseRepository";
+import { Pagination } from "../../core/entities/Pagination";
 import { AppResponse } from "../../core/entities/AppResponse";
 import { Validator } from "../../application/validation/Validator";
 import { AppResponses } from "../../application/responses/AppResponses";
 import { ITransactionsRepository } from "../../core/interfaces/ITransactionsRepository";
-import { Pagination } from "../../core/entities/Pagination";
 
 export class TransactionsRepository extends BaseRepository implements ITransactionsRepository {
     public Validations: Validator | undefined;

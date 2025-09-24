@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from "express";
 import { UserRepository } from "../../infrastructure/repositories/UserRepository";
+import { AppResponse } from "../../core/entities/AppResponse";
 
 /**
  * @swagger
@@ -87,6 +88,20 @@ UserController.post("/register", async (request: Request, response: Response) =>
 UserController.post("/login", async (request: Request, response: Response) => {
     response.send(await userRepository.authenticateUser(request.body))
 });
+
+UserController.post("/refreshToken", async (request: Request, response: Response) => {
+    const token = await getAccessToken(request);
+
+    if (token !== "")
+        response.send(await userRepository.refreshAuthToken(request.body, token));
+    else
+        response.send({ status: false, message: "You are not authenticated.", responseCode: 500 } as AppResponse)
+});
+
+const getAccessToken = async (request: Request): Promise<string> => {
+    // the refresh token endpoint can be used here
+    return request.headers["authorization"]?.replace("Bearer ", "") ? request.headers["authorization"]?.replace("Bearer ", "") : "";
+}
 
 
 export default UserController

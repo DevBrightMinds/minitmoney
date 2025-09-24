@@ -281,6 +281,7 @@ TransactionsController.post("/getAll", async (request: Request, response: Respon
 });
 
 const isSessionValid = async (request: Request): Promise<string> => {
+    // the refresh token endpoint can be used here
     return request.headers["authorization"]?.replace("Bearer ", "") ? request.headers["authorization"]?.replace("Bearer ", "") : "";
 }
 
