@@ -137,8 +137,10 @@ VALUES
 Then run this command to execute the seeing 
 
 ```bash
-mysql -u <your_username> -p <your_database_name> < prisma/seed.sql
+mysql -u <your_username> -p <your_database_name> <prisma/seed.sql>
 ```
+
+With the 'seed.sql' being a file that you will create - containing the SQL commands above
 
 ### To run the app
 
