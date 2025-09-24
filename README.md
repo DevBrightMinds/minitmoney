@@ -82,7 +82,9 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
--**Your examplary models used to build the App**
+-**Your examplary / Suggested Models used to build the App**
+
+``` bash
 model User {
     id Int @id @default(autoincrement())
     email String @unique
@@ -112,6 +114,7 @@ model Transaction {
     netAmount Float
     createdAt DateTime @default(now())
 }
+```
 
 ### To run the app
 
