@@ -33,7 +33,7 @@ Make sure you have the following software installed on your machine:
 - **Node.js**: [Download Node.js](https://nodejs.org/)
 - **npm** (Node Package Manager): Comes installed with Node.js
 - **MySQL**: [Download MySQL](https://dev.mysql.com/downloads/)
-- **Prisma CLI**: `npm install -g prisma` (for migrations and DB management)
+- **Prisma CLI**: `npm install -g prisma` (for migrations and DB management)(https://www.prisma.io/)
 
 ### Clone the Repository
 
